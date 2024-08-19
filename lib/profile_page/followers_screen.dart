@@ -6,16 +6,16 @@ import 'package:flutter/material.dart';
 
 
 
-class FollowsScreen extends StatefulWidget {
+class FollowersScreen extends StatefulWidget {
   final String userId; // User ID to display the profile for
 
-  const FollowsScreen({super.key, required this.userId});
+  const FollowersScreen({super.key, required this.userId});
 
   @override
-  FollowsScreenState createState() => FollowsScreenState();
+  FollowersScreenState createState() => FollowersScreenState();
 }
 
-class FollowsScreenState extends State<FollowsScreen> {
+class FollowersScreenState extends State<FollowersScreen> {
 
   @override
   void initState() {
@@ -75,13 +75,13 @@ class FollowsScreenState extends State<FollowsScreen> {
 
           if (userSnapshot.hasData && userSnapshot.data!.exists) {
             final userData = userSnapshot.data!.data() as Map<String, dynamic>;
-            final following = userData['following'] as List<dynamic>? ?? []; // Get the 'following' list
-            // final followers = userData['followers'] as List<dynamic>? ?? []; // Get the 'following' list
+            // final following = userData['following'] as List<dynamic>? ?? []; // Get the 'following' list
+            final followers = userData['followers'] as List<dynamic>? ?? []; // Get the 'following' list
 
             return ListView.builder(
-            itemCount: following.length,
+            itemCount: followers.length,
             itemBuilder: (context, index) {
-              final followerId = following[index];
+              final followerId = followers[index];
               return FutureBuilder<DocumentSnapshot>( 
                 // Fetch each follower's data
                 future: FirebaseFirestore.instance.collection('users').doc(followerId).get(),

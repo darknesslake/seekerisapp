@@ -17,7 +17,7 @@ import 'package:seekeris/screens/settings_screen.dart';
 import 'package:seekeris/profile_page/favorite_screen.dart';
 
 import '../profile_page/follows_screen.dart';
-import '../profile_page/friends_screen.dart';
+import '../profile_page/followers_screen.dart';
 
 
 
@@ -289,6 +289,9 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   // 1. Build Profile Menu (Games, Friends, Follows)
   Widget _buildProfileMenu(BuildContext context, Map<String, dynamic> userData) {
+    final authProvider = Provider.of<Auth>(context, listen: false);
+    final currentUserId = authProvider.user?.uid; 
+
     return Container(
       decoration: BoxDecoration(
         color: const Color.fromARGB(255, 31, 37, 47),
@@ -300,8 +303,20 @@ class ProfileScreenState extends State<ProfileScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
           children: [
             _buildMenuButton(context, 'Games', Icons.games_outlined, const GamesScreen()),
-            _buildMenuButton(context, 'Friends', Icons.people_outlined, const FriendsScreen()),
-            _buildMenuButton(context, 'Followers', Icons.person_add_alt_1_outlined, const FollowsScreen()),
+            if (currentUserId != null) // Conditionally add the FollowersScreen button
+            _buildMenuButton(
+              context, 
+              'Followers', 
+              Icons.people_outlined, 
+              FollowersScreen(userId: currentUserId), // Pass the non-null currentUserId
+            ),
+          if (currentUserId != null) // Conditionally add the FollowsScreen button
+            _buildMenuButton(
+              context,
+              'Following',
+              Icons.person_add_alt_1_outlined,
+              FollowsScreen(userId: currentUserId), // Pass the non-null currentUserId
+            ),
           ],
         ),
       ),
