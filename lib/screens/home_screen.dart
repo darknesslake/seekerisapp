@@ -97,7 +97,7 @@ class HomeScreenState extends State<HomeScreen> {
           onTap: onItemTapped,
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.feed),
               label: 'Feed',
             ),
             BottomNavigationBarItem(

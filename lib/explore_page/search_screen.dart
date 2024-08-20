@@ -103,8 +103,8 @@ class SearchScreenState extends State<SearchScreen> {
           style: const TextStyle(color: Colors.white),
         ),
       ),
-      body: _searchResults.isEmpty 
-          ? const Center(child: Text('No results found'))
+      body: Container( color: Colors.black, child: _searchResults.isEmpty 
+          ? const Center(child: Text('No results found', style: TextStyle(color: Colors.white),))
           : ListView.builder(
               itemCount: _searchResults.length,
               itemBuilder: (context, index) {
@@ -113,8 +113,8 @@ class SearchScreenState extends State<SearchScreen> {
                   leading: CircleAvatar(
                     backgroundImage: NetworkImage(userData['profilePictureUrl'] ?? ''),
                   ),
-                  title: Text(userData['username']),
-                  subtitle: Text(userData['displayName'] ?? ''),
+                  title: Text(userData['username'], style: const TextStyle(color: Colors.white),),
+                  subtitle: Text(userData['displayName'] ?? '', style: const TextStyle(color: Colors.white),),
                   onTap: () {
                     if (userData['userId'] != null) { // Check if userId is not null
                       Navigator.push(
@@ -131,6 +131,7 @@ class SearchScreenState extends State<SearchScreen> {
                 );
               },
             ),
+        ),
     );
   }
 }
