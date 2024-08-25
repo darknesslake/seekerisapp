@@ -505,10 +505,13 @@ class ProfileScreenState extends State<ProfileScreen> {
                     GestureDetector( // Make username tappable
                       onTap: () {
                         // Navigate to the original poster's profile
-                        _navigateToProfile(context, postData['originalPostUserId']);
+                        _navigateToProfile(context, postData[
+                          'originalPostUserId'
+                        ]);
                       },
                       child: Text(
-                        userName,
+                        postData['isRepost'] == true 
+                          ? postData['whoRepost'] ?? 'nnц76' : userName,
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -530,6 +533,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
+
             const Spacer(),
             if (postData['userId'] == currentUserId)
                       Align(
@@ -583,8 +587,27 @@ class ProfileScreenState extends State<ProfileScreen> {
               // Repost button (show only if it's not the current user's post)
                 if (postData['userId'] != currentUserId)
                   RepostWidget(postData: postData),
+                const SizedBox(width: 20),
+
+                if (postData['isRepost'] == true) // Check if it's a repost
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Row(
+                      children: [
+                        Icon(Icons.repeat, size: 16, color: Colors.grey[600]), // Repost icon
+                        const SizedBox(width: 5),
+                        Text(
+                          'Reposted by ${postData['userName'] ?? 'Unknown User'}', // Main user's name
+                          style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                        ),
+                    ],
+                  ),
+                ),
+
               ],
+              
             ),
+            
             
             ],
           ),

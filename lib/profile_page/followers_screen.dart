@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:seekeris/screens/profile_screen.dart';
 // import 'package:provider/provider.dart';
 // import 'package:seekeris/etc/buildPostForEvery.dart';
 // import 'package:seekeris/resources/auth.dart';
@@ -98,10 +99,22 @@ class FollowersScreenState extends State<FollowersScreen> {
                     final followerData = followerSnapshot.data!.data() as Map<String, dynamic>;
                     return ListTile(
                       leading: CircleAvatar(
-                        backgroundImage: NetworkImage(followerData['profilePictureUrl'] ?? ''),
+                        backgroundImage: NetworkImage(followerData['profilePictureUrl'] ?? '../assets/images/default_profile.png'),
                       ),
                       title: Text(followerData['username'] ?? '', style: const TextStyle(color: Colors.white),),
                       subtitle: Text(followerData['displayName'] ?? '', style: const TextStyle(color: Colors.white),),
+                      onTap: () {
+                        // Get the userId of the tapped user
+                        final String userId = followerData['userId'];
+
+                        // Navigate to the user's profile
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProfileScreen(userId: userId),
+                          ),
+                        );
+                      },
                     );
                   } else {
                     return const SizedBox.shrink(); // Or handle the case where the follower's data is not found

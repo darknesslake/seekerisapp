@@ -37,7 +37,8 @@ class BuildPostForEvery extends StatelessWidget {
               children: [
                 _buildProfileImage(userImageUrl),
                 const SizedBox(width: 10),
-                Column(
+                Expanded( // Use Expanded to allow the Column to take up available space
+      child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(children: [
@@ -61,7 +62,7 @@ class BuildPostForEvery extends StatelessWidget {
                       style: TextStyle(color: Colors.grey[600], fontSize: 12),
                     ),
                   ],
-                ),
+                ),),
               ],
             ),
             const SizedBox(height: 10),
@@ -99,7 +100,22 @@ class BuildPostForEvery extends StatelessWidget {
                 if (postData['userId'] != currentUserId)
                   RepostWidget(postData: postData),
                 
-                
+                const SizedBox(width: 12),            
+                if (postData['isRepost'] == true) // Check if it's a repost
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Row(
+                      children: [
+                        Icon(Icons.repeat, size: 16, color: Colors.grey[600]), // Repost icon
+                        const SizedBox(width: 5),
+                        Text(
+                          'Reposted by ${postData['userName'] ?? 'Unknown User'}', // Main user's name
+                          style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+
               ],
               
             ),

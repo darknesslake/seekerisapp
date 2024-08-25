@@ -81,6 +81,8 @@ class CreatePostScreenState extends State<CreatePostScreen> {
         'likesCount': 0,
         'commentsCount': 0,
         'game': selectedGame,
+        'isRepost': false,
+        
         // Add other fields as needed (e.g., media URLs)
       });
 

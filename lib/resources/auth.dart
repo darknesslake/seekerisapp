@@ -17,6 +17,8 @@ class Auth with ChangeNotifier {
   String? _currentGame;
 
   String? get currentGame => _currentGame;
+  
+  
 
   void setCurrentGame(String? game) {
     _currentGame = game;
@@ -147,7 +149,7 @@ Future<void> registerWithEmailAndPassword(BuildContext context, String email, St
     }
   }
 
-  // Login with email and password (no username lookup)
+
   Future<void> loginWithEmailAndPassword(BuildContext context, String email, String password) async {
     try {
       // Attempt login
@@ -233,6 +235,7 @@ Future<void> registerWithEmailAndPassword(BuildContext context, String email, St
     notifyListeners();
   }
 
+
   Future<void> repost(BuildContext context, Map<String, dynamic> originalPostData) async {
     try {
       final currentUser = _auth.currentUser;
@@ -241,24 +244,35 @@ Future<void> registerWithEmailAndPassword(BuildContext context, String email, St
         throw Exception('User not logged in.');
       }
 
-      // Create a new post document with the reposted content
-      await FirebaseFirestore.instance.collection('posts').add({
-        'userId': currentUser.uid,
-        'userName': originalPostData['userName'] ?? 'Anonymous', // Use currentUser.displayName
-        'userImageUrl': currentUser.photoURL ?? '',
-        'originalPostId': originalPostData['postId'],
-        'originalPostUserId': originalPostData['userId'], 
-        'content': originalPostData['content'],
-        'timestamp': FieldValue.serverTimestamp(),
-        'likesCount': 0,
-        'commentsCount': 0,
-        // ... other fields as needed
-      });
+    final userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUser.uid)
+        .get();
 
-      // Optionally, show a success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Post reposted!')),
-      );
+    final userData = userDoc.data() as Map<String, dynamic>?;
+    final currentUserName = userData?['username'] ?? 'Anonymous'; // Get the current user's username
+
+
+      // Create a new post document with the reposted content
+    await FirebaseFirestore.instance.collection('posts').add({
+      'userId': currentUser.uid,
+      'userName': originalPostData['userName'] ?? 'Anonymous', // Use currentUser.displayName
+      'userImageUrl': currentUser.photoURL ?? '',
+      'originalPostId': originalPostData['postId'],
+      'originalPostUserId': originalPostData['userId'], 
+      'content': originalPostData['content'],
+      'timestamp': FieldValue.serverTimestamp(),
+      'likesCount': 0,
+      'commentsCount': 0,
+      'isRepost': true,
+      'whoRepost': currentUserName ?? 'Anonymous',
+      // ... other fields as needed
+    });
+
+    // Optionally, show a success message
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Post reposted!')),
+    );
     } on FirebaseException catch (e) {
       // Handle Firestore errors
       print('Firestore Error: ${e.code} - ${e.message}');
@@ -292,51 +306,7 @@ Future<void> registerWithEmailAndPassword(BuildContext context, String email, St
 //   get user => null;
 
 //   // Login with email and password
-//   Future<void> loginWithEmailAndPassword(BuildContext context, String email, String password) async {
-//     try {
-//       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-//         email: email.trim(), // Trim whitespace
-//         password: password.trim(),
-//       );
 
-//       // Check if the email is verified
-//       if (userCredential.user != null && !userCredential.user!.emailVerified) {
-//         throw FirebaseAuthException(
-//           code: 'email-not-verified',
-//           message: 'Please verify your email address.',
-//         );
-//       }
-
-//       // Successful login
-//       notifyListeners(); // Notify listeners of the auth state change
-//       Navigator.pushReplacementNamed(context, '/home'); // Redirect to home screen
-//     } on FirebaseAuthException catch (e) {
-//       String errorMessage = 'An error occurred during login.';
-
-//       switch (e.code) {
-//         case 'user-not-found':
-//           errorMessage = 'No user found for that email.';
-//           break;
-//         case 'wrong-password':
-//           errorMessage = 'Wrong password provided for that user.';
-//           break;
-//         case 'invalid-email':
-//           errorMessage = 'The email address is badly formatted.';
-//           break;
-//         case 'email-not-verified':
-//           errorMessage = 'Please verify your email address.';
-//           break;
-//         // Add more cases for other Firebase Auth errors as needed
-//       }
-
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         SnackBar(
-//           content: Text(errorMessage),
-//           backgroundColor: Colors.red,
-//         ),
-//       );
-//     }
-//   }
 
 //   // Register with email and password (with password hashing)
 //   Future<void> registerWithEmailAndPassword(String email, String password, String username,) async {

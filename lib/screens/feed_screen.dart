@@ -75,6 +75,10 @@ class FeedScreenState extends State<FeedScreen> {
             final userData = userSnapshot.data!.data() as Map<String, dynamic>;
             final following = userData['following'] as List<dynamic>? ?? []; // Get the 'following' list
 
+            if (following.isEmpty) {
+              return const Center(child: Text('You are not following anyone yet.', style: TextStyle(color: Colors.white),));
+            }
+
             return StreamBuilder<QuerySnapshot>( // Fetch posts from followed users
               stream: FirebaseFirestore.instance
                   .collection('posts')
@@ -93,7 +97,7 @@ class FeedScreenState extends State<FeedScreen> {
                 final posts = postsSnapshot.data!.docs;
 
                 if (posts.isEmpty) {
-                  return const Center(child: Text('No posts from your friends yet.'));
+                  return const Center(child: Text('No posts from your friends yet.', style: TextStyle(color: Colors.white),));
                 }
 
                 return ListView.builder(

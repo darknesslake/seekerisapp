@@ -52,92 +52,48 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 20,),
 
               ElevatedButton(
-                onPressed: _isLoading ? null : () async {  // Disable button while loading
+                onPressed: _isLoading ? null : () async {
                   if (_formKey.currentState!.validate()) {
-                    setState(() => _isLoading = true); // Show loading indicator
+                    setState(() {
+                      _isLoading = true;
+                    });
 
                     try {
+                      // Replace 'your_login_function' with your actual login function
                       await context.read<Auth>().loginWithEmailAndPassword(
                         context, 
                         _emailController.text, 
                         _passwordController.text,
                       );
-                      Navigator.pushReplacementNamed(context, '/home'); // Navigate on success
+
+                      // Navigate on successful login
+                      // Navigator.pushReplacementNamed(context, '/home');
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Error: $e')),
                       );
                     } finally {
-                      setState(() => _isLoading = false); // Hide loading indicator
+                      setState(() {
+                        _isLoading = false;
+                      });
                     }
                   }
                 },
                 // style: ElevatedButton.styleFrom(
-                //   backgroundColor: Colors.blue, 
+                //   backgroundColor: Colors.blue,
                 //   foregroundColor: Colors.white,
                 //   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                 //   textStyle: const TextStyle(fontSize: 18),
-                //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)), // Add rounded corners
+                //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
                 // ),
                 child: _isLoading
                     ? const SizedBox(
-                        width: 24, // Set width and height for the CircularProgressIndicator
+                        width: 24,
                         height: 24,
                         child: CircularProgressIndicator(color: Colors.white),
-                      ) // Loading indicator
+                      ) 
                     : const Text('Login', style: TextStyle(fontSize: 18)),
               ),
-
-              // ElevatedButton(
-              //   onPressed: _isLoading ? null : () async { // Disable button when loading
-              //     if (_formKey.currentState!.validate()) {
-              //       setState(() {
-              //         _isLoading = true; // Start loading
-              //       });
-              //       try {
-              //         final username = _usernameController.text.trim();
-              //         final password = _passwordController.text.trim();
-
-              //         QuerySnapshot snap = await FirebaseFirestore.instance
-              //             .collection("users")
-              //             .where("username", isEqualTo: username.toLowerCase())
-              //             .get();
-
-              //         if (snap.docs.isNotEmpty) {
-              //           final userEmail = snap.docs[0]['email'] as String;
-              //           context.read<Auth>().login(userEmail, password);
-              //         } else {
-              //           throw Exception('No user found for that username.');
-              //         }
-
-              //         // Navigate on successful login
-              //         Navigator.of(context).pushReplacementNamed('/home');
-              //       } catch (e) {
-              //         ScaffoldMessenger.of(context).showSnackBar(
-              //           SnackBar(content: Text('Error: $e')),
-              //         );
-              //       } finally {
-              //         setState(() {
-              //           _isLoading = false; // Stop loading
-              //         });
-              //       }
-              //     }
-              //   },
-              //   style: ElevatedButton.styleFrom(
-              //     backgroundColor: Colors.blue,  // Background color
-              //     foregroundColor: Colors.white,  // Text color
-              //     padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-              //     textStyle: TextStyle(fontSize: 18),
-              //     shape: RoundedRectangleBorder( // Rounded corners
-              //       borderRadius: BorderRadius.circular(25.0), 
-              //     ),
-              //   ),
-              //   child: _isLoading
-              //       ? CircularProgressIndicator( // Loading indicator
-              //           color: Colors.white,
-              //         )
-              //       : Text("LOG IN"),
-              // ),
               
               const SizedBox(height: 10,),
 

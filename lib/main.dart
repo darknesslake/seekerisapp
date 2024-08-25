@@ -95,7 +95,9 @@ class MyApp extends StatelessWidget {
         // Add other routes here...
       },
       onUnknownRoute: (settings) {
-        return MaterialPageRoute(builder: (context) => ErrorScreen(errorMessage: 'Error: Page not found!'));
+        return MaterialPageRoute(builder: (context) => 
+        ErrorScreen(errorMessage: 'Error: Page not found!')
+        );
       },
     );
   }
