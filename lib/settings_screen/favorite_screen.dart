@@ -15,7 +15,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xFF0D1015),
-        title: const Text('Settings', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+        title: const Text('Favorite', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
       ),
       backgroundColor: Colors.black,
       body: Container( // Add a Container for styling

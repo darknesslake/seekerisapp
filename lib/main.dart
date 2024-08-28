@@ -2,18 +2,18 @@ import 'dart:async';
 
 
 
-import 'package:seekeris/screens/createpost_screen.dart';
+import 'package:seekeris/etc/createpost_screen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:seekeris/screens/error_screen.dart';
 import 'package:seekeris/screens/profile_screen.dart';
-import 'package:seekeris/screens/settings_screen.dart';
+import 'package:seekeris/settings_screen/settings_screen.dart';
 // import 'dart:math';
 
 
-import 'screens/login_screen.dart';
-import 'screens/register_screen.dart'; // Import the RegisterPage
+import 'login_and_register/login_screen.dart';
+import 'login_and_register/register_screen.dart'; // Import the RegisterPage
 import 'resources/auth.dart';
 import 'screens/home_screen.dart';
 // import 'feed_page.dart';
@@ -94,9 +94,18 @@ class MyApp extends StatelessWidget {
           },
         ),       
         // '/feed': (context) => const FeedScreen(userId: '',),
-        '/home': (context) => const HomeScreen(title: 'Seekeris'),
-        // '/home': (context) => const SettingsScreen(userId: currentUserId,),
-
+        // '/home': (context) => const HomeScreen(title: 'Seekeris'),
+        '/home': (context) => Consumer<Auth>( // Use Consumer to access auth data
+          builder: (context, auth, _) {
+            if (auth.isLoggedIn && auth.user != null) {
+              return SettingsScreen(userId: auth.user!.uid); 
+            } else {
+              // Handle the case where the user is not logged in
+              return const LoginScreen();
+            }
+          },
+        ),
+        
         // Add other routes here...
       },
       onUnknownRoute: (settings) {

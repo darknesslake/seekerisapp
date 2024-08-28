@@ -6,14 +6,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:provider/provider.dart';
 import 'package:seekeris/etc/repost_widget.dart';
-import 'package:seekeris/screens/createpost_screen.dart';
+import 'package:seekeris/etc/createpost_screen.dart';
 
 import '../resources/auth.dart';
 import 'package:intl/intl.dart';
 import 'package:seekeris/profile_page/games_screen.dart';
 // import 'package:seekeris/profile_page/ProfileCreation.dart';
-import 'package:seekeris/profile_page/ProfileEdition.dart';
-import 'package:seekeris/screens/settings_screen.dart';
+import 'package:seekeris/settings_screen/ProfileEdition.dart';
+import 'package:seekeris/settings_screen/settings_screen.dart';
 // import 'package:seekeris/profile_page/favorite_screen.dart';
 
 import '../profile_page/follows_screen.dart';
@@ -107,18 +107,18 @@ class ProfileScreenState extends State<ProfileScreen> {
             ),
             child: Text(_isFollowing ? 'Unfollow' : 'Follow'),
           ),
-          if (userData['userId'] == currentUserId)
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProfileEditScreen(userData: userData),
-                  ),
-                );
-              },
-              child: const Text('Edit Profile'),
-            ),
+          // if (userData['userId'] == currentUserId)
+          //   ElevatedButton(
+          //     onPressed: () {
+          //       Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //           builder: (context) => ProfileEditScreen(userData: userData),
+          //         ),
+          //       );
+          //     },
+          //     child: const Text('Edit Profile'),
+          //   ),
         ],
       );
   }

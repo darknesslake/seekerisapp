@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:seekeris/resources/auth.dart';
-import 'package:seekeris/screens/createpost_screen.dart';
+import 'package:seekeris/etc/createpost_screen.dart';
 
 
 import 'feed_screen.dart';
