@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:seekeris/screens/error_screen.dart';
 import 'package:seekeris/screens/profile_screen.dart';
+import 'package:seekeris/screens/settings_screen.dart';
 // import 'dart:math';
 
 
@@ -58,6 +59,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final authProvider = Provider.of<Auth>(context, listen: false);
+    // final currentUserId = authProvider.user?.uid; 
+
     return MaterialApp(
       
       debugShowCheckedModeBanner: false,
@@ -91,6 +95,7 @@ class MyApp extends StatelessWidget {
         ),       
         // '/feed': (context) => const FeedScreen(userId: '',),
         '/home': (context) => const HomeScreen(title: 'Seekeris'),
+        // '/home': (context) => const SettingsScreen(userId: currentUserId,),
 
         // Add other routes here...
       },

@@ -14,7 +14,7 @@ import 'package:seekeris/profile_page/games_screen.dart';
 // import 'package:seekeris/profile_page/ProfileCreation.dart';
 import 'package:seekeris/profile_page/ProfileEdition.dart';
 import 'package:seekeris/screens/settings_screen.dart';
-import 'package:seekeris/profile_page/favorite_screen.dart';
+// import 'package:seekeris/profile_page/favorite_screen.dart';
 
 import '../profile_page/follows_screen.dart';
 import '../profile_page/followers_screen.dart';
@@ -167,59 +167,60 @@ class ProfileScreenState extends State<ProfileScreen> {
 
 
 
-  void _menuOpen(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              // ListTile(
-              //   leading: Icon(Icons.person),
-              //   title: Text('Profile'),
-              //   onTap: () {
-              //     Navigator.pop(context);
-              //   },
-              // ),
-              ListTile(
-                leading: const Icon(Icons.favorite),
-                title: const Text('Favorites'),
-                onTap: () {
-                  Navigator.of(context).pop(); // Close the bottom sheet
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const FavoriteScreen()));
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.settings),
-                title: const Text('Settings'),
-                onTap: () {
-                  Navigator.of(context).pop(); // Close the bottom sheet
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.logout),
-                title: const Text('Logout'),
-                onTap: () async {
-                  Navigator.of(context).pop(); // Close the menu before logging out
-                  try {
-                    await Provider.of<Auth>(context, listen: false).logout();
-                    Navigator.of(context).pushReplacementNamed('/login'); // Use pushReplacementNamed for logging out
-                  } catch (e) {
-                    // Handle any logout errors here (e.g., show a Snackbar)
-                    print('Logout error: $e');
-                  }
-                },
-              ),
-              // Add more menu items as needed...
-            ],
-          ),
-        );
-      },
-    );
-  }
+  // void _menuOpen(BuildContext context) {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     shape: const RoundedRectangleBorder(
+  //     borderRadius: BorderRadius.only(
+  //       topLeft: Radius.circular(20.0), 
+  //       topRight: Radius.circular(20.0), 
+  //     ),),
+  //     builder: (BuildContext context) {
+  //       return Container(
+          
+  //         color: const Color.fromARGB(255, 31, 37, 47),
+  //         padding: const EdgeInsets.all(20),
+  //         child: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: <Widget>[
+
+  //             ListTile(
+  //               leading: const Icon(Icons.favorite, color: Colors.white,),
+  //               title: const Text('Favorites', style: TextStyle(color: Colors.white),),
+  //               onTap: () {
+  //                 Navigator.of(context).pop(); // Close the bottom sheet
+  //                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => const FavoriteScreen()));
+  //               },
+  //             ),
+  //             ListTile(
+  //               leading: const Icon(Icons.settings, color: Colors.white,),
+  //               title: const Text('Settings', style: TextStyle(color: Colors.white),),
+  //               onTap: () {
+  //                 Navigator.of(context).pop(); // Close the bottom sheet
+  //                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
+  //               },
+  //             ),
+  //             ListTile(
+  //               leading: const Icon(Icons.logout, color: Colors.white,),
+  //               title: const Text('Logout', style: TextStyle(color: Colors.white),),
+  //               onTap: () async {
+  //                 Navigator.of(context).pop(); // Close the menu before logging out
+  //                 try {
+  //                   await Provider.of<Auth>(context, listen: false).logout();
+  //                   Navigator.of(context).pushReplacementNamed('/login'); // Use pushReplacementNamed for logging out
+  //                 } catch (e) {
+  //                   // Handle any logout errors here (e.g., show a Snackbar)
+  //                   print('Logout error: $e');
+  //                 }
+  //               },
+  //             ),
+  //             // Add more menu items as needed...
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget _buildProfileHeader(BuildContext context, Map<String, dynamic>? userData) {
     if (userData == null) {
@@ -621,6 +622,9 @@ class ProfileScreenState extends State<ProfileScreen> {
 
 @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<Auth>(context, listen: false);
+    final currentUserId = authProvider.user?.uid; 
+
     return ScaffoldMessenger(
       key: _scaffoldMessengerKey,
       child: Scaffold(
@@ -646,7 +650,14 @@ class ProfileScreenState extends State<ProfileScreen> {
           actions: [
             IconButton(
               icon: const Icon(Icons.menu_outlined, color: Colors.white),
-              onPressed: () => _menuOpen(context), 
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SettingsScreen(userId: currentUserId,),
+                  ),
+                );
+              },
             ),
           ],
         ),
