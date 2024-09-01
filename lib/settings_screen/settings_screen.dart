@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:seekeris/settings_screen/ProfileEdition.dart';
+import 'package:seekeris/settings_screen/account/password_edit.dart';
+import 'package:seekeris/settings_screen/account/account_edit.dart';
 import 'package:seekeris/settings_screen/favorite_screen.dart';
 import 'package:seekeris/resources/auth.dart';
-import 'package:seekeris/settings_screen/privacy_screen.dart';
+import 'package:seekeris/settings_screen/account/privacy_screen.dart';
 import 'package:seekeris/settings_screen/activity_screen.dart';
 
 
@@ -14,10 +15,10 @@ class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key, required this.userId});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  State<SettingsScreen> createState() => SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class SettingsScreenState extends State<SettingsScreen> {
 
   Map<String, dynamic>? _userData;  
   // final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -86,9 +87,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           children: [
             _buildButton(
             context,
-            'Profile Edit',
-            Icons.edit_square,
-            ProfileEditScreen(userData: userData),
+            'Account',
+            Icons.account_box,
+            AccountEdit(userData: userData),
           ),
           // const SizedBox(height: 12),
 
@@ -120,14 +121,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _buildButton(context, 'Favorite', Icons.favorite, const FavoriteScreen()),
                 const SizedBox(height: 12),
 
-                _buildButton(
-                  context,
-                  'Privacy',
-                  Icons.privacy_tip,
-                  PrivacyScreen(
-                    // userId: currentUserId
-                    ), // Pass the non-null currentUserId
-                ),
+
                 // const SizedBox(height: 12),
               ],
             ),

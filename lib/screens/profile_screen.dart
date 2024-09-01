@@ -12,7 +12,7 @@ import '../resources/auth.dart';
 import 'package:intl/intl.dart';
 import 'package:seekeris/profile_page/games_screen.dart';
 // import 'package:seekeris/profile_page/ProfileCreation.dart';
-import 'package:seekeris/settings_screen/ProfileEdition.dart';
+import 'package:seekeris/settings_screen/account/password_edit.dart';
 import 'package:seekeris/settings_screen/settings_screen.dart';
 // import 'package:seekeris/profile_page/favorite_screen.dart';
 
