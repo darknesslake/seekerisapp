@@ -288,6 +288,22 @@ Future<void> registerWithEmailAndPassword(BuildContext context, String email, St
     }
   }
 
+  Future<void> saveGenderToFirestore(String gender) async {
+    try {
+      final currentUser = _auth.currentUser;
+
+      if (currentUser != null) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUser.uid)
+            .update({'gender': gender});
+      } else {
+        throw Exception('User not logged in.');
+      }
+    } catch (e) {
+      throw Exception('Error updating gender: $e');
+    }
+  }
 
 }
 
