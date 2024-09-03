@@ -88,13 +88,8 @@ class AccountEditState extends State<AccountEdit> {
                     Icons.edit_square,
                     HeaderEditScreen(userData: _userData!, userId: currentUserId!), // Assuming _userData is non-nullable here
                   ),
-                  const SizedBox(height: 12),
-                  _buildButton(
-                    context,
-                    'Privacy', // Consider a more descriptive name for this button
-                    Icons.privacy_tip,
-                    PrivacyScreen(userData: _userData!), // Assuming userData might be null
-                  ),
+                  
+                  
                 ],
               ),
             ),
@@ -109,6 +104,13 @@ class AccountEditState extends State<AccountEdit> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  _buildButton(
+                    context,
+                    'Privacy', // Consider a more descriptive name for this button
+                    Icons.privacy_tip,
+                    PrivacyScreen(userData: _userData!), // Assuming userData might be null
+                  ),
+                  const SizedBox(height: 12),
                   
                   _buildButton(
                     context,
