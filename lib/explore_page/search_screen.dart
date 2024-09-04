@@ -83,8 +83,8 @@ class SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        backgroundColor: Color(0xFF0D1015),
+        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: const Color(0xFF0D1015),
         title: TextField(
           controller: _searchController,
           onChanged: (value) {

@@ -50,7 +50,7 @@ class FeedScreenState extends State<FeedScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:  Color(0xFF0D1015),
+        backgroundColor:  const Color(0xFF0D1015),
         title: const Text('Feed',
         style: TextStyle(
                 color: Colors.white,

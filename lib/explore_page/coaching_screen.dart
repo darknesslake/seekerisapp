@@ -8,8 +8,8 @@ class CoachingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:  Color(0xFF0D1015),
-        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor:  const Color(0xFF0D1015),
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text('Coaching', style: TextStyle(color: Colors.white),),
       ),
       backgroundColor: Colors.black,

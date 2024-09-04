@@ -33,8 +33,7 @@ class AccountEditState extends State<AccountEdit> {
     _userData = widget.userData; // Initialize _userData from widget
   }
   
-  Widget _buildButton(BuildContext context, String label, IconData icon, Widget destination, 
-  {Map<String, dynamic>? userData, String? userId}) {
+  Widget _buildButton(BuildContext context, String label, IconData icon, Widget destination) {
     return ElevatedButton.icon(
       onPressed: () {
         Navigator.push(

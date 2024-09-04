@@ -35,7 +35,7 @@ class ProfileScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircleAvatar( // Display profile picture (you might need to adjust this)
+          const CircleAvatar( // Display profile picture (you might need to adjust this)
             radius: 50,
             // backgroundImage: NetworkImage(userData['profilePictureUrl'] ?? ''),
           ),

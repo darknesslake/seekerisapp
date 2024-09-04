@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:seekeris/resources/auth.dart';
-import 'package:flutter/foundation.dart';
 
 
 class CreatePostScreen extends StatefulWidget {
@@ -113,7 +112,7 @@ class CreatePostScreenState extends State<CreatePostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:  Color(0xFF0D1015),
+        backgroundColor:  const Color(0xFF0D1015),
         title: const Text('Create Post',
         style: TextStyle(
                 color: Colors.white,
@@ -136,7 +135,7 @@ class CreatePostScreenState extends State<CreatePostScreen> {
                 return DropdownMenuItem<String>(
                   
                   value: game,
-                  child: Text(game, style: TextStyle(color: Colors.black),),
+                  child: Text(game, style: const TextStyle(color: Colors.black),),
                 );
               }).toList(),
               onChanged: (value) {
@@ -163,7 +162,7 @@ class CreatePostScreenState extends State<CreatePostScreen> {
               },
             ),
             TextField(
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
               controller: _postContentController,
               decoration: const InputDecoration(
                 hintText: 'What\'s on your mind?',hintStyle: TextStyle(color: Colors.white),

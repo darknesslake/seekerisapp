@@ -140,7 +140,7 @@ class PasswordEditScreenState extends State<PasswordEditScreen> {
             width: double.infinity,
             padding: const EdgeInsets.all(20.0), // Add padding
             decoration: BoxDecoration( // Add some decoration
-              color: Color(0xFF0D1015), // Background color
+              color: const Color(0xFF0D1015), // Background color
               borderRadius: BorderRadius.circular(10.0), // Rounded corners
             ),
             child:  const Column( 
@@ -162,7 +162,7 @@ class PasswordEditScreenState extends State<PasswordEditScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(20.0), // Add padding
                 decoration: BoxDecoration( // Add some decoration
-                  color: Color(0xFF0D1015), // Background color
+                  color: const Color(0xFF0D1015), // Background color
                   borderRadius: BorderRadius.circular(10.0), // Rounded corners
                 ),
                 

@@ -15,7 +15,6 @@ import 'package:seekeris/settings_screen/settings_screen.dart';
 import 'login_and_register/login_screen.dart';
 import 'login_and_register/register_screen.dart'; // Import the RegisterPage
 import 'resources/auth.dart';
-import 'screens/home_screen.dart';
 // import 'feed_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';  
@@ -110,7 +109,7 @@ class MyApp extends StatelessWidget {
       },
       onUnknownRoute: (settings) {
         return MaterialPageRoute(builder: (context) => 
-        ErrorScreen(errorMessage: 'Error: Page not found!')
+        const ErrorScreen(errorMessage: 'Error: Page not found!')
         );
       },
     );

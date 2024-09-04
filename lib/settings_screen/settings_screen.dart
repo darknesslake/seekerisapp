@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:seekeris/settings_screen/account/password_edit.dart';
 import 'package:seekeris/settings_screen/account/account_edit.dart';
 import 'package:seekeris/settings_screen/favorite_screen.dart';
 import 'package:seekeris/resources/auth.dart';
-import 'package:seekeris/settings_screen/account/privacy_screen.dart';
 import 'package:seekeris/settings_screen/activity_screen.dart';
 
 
@@ -75,7 +73,7 @@ class SettingsScreenState extends State<SettingsScreen> {
           width: double.infinity,
           padding: const EdgeInsets.all(20.0), // Add padding
           decoration: BoxDecoration( // Add some decoration
-            color: Color(0xFF0D1015), // Background color
+            color: const Color(0xFF0D1015), // Background color
             borderRadius: BorderRadius.circular(10.0), // Rounded corners
           ),
         // padding: const EdgeInsets.all(8.0),
@@ -100,7 +98,7 @@ class SettingsScreenState extends State<SettingsScreen> {
             width: double.infinity,
             padding: const EdgeInsets.all(20.0), // Add padding
             decoration: BoxDecoration( // Add some decoration
-              color: Color(0xFF0D1015), // Background color
+              color: const Color(0xFF0D1015), // Background color
               borderRadius: BorderRadius.circular(10.0), // Rounded corners
             ),
             child:  Column( 
@@ -112,7 +110,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                   context, 
                   'Activity', 
                   Icons.local_activity, 
-                  ActivityScreen(
+                  const ActivityScreen(
                     // userId: currentUserId
                     ), // Pass the non-null currentUserId
                 ),
@@ -132,7 +130,7 @@ class SettingsScreenState extends State<SettingsScreen> {
             width: double.infinity,
             padding: const EdgeInsets.all(20.0), // Add padding
             decoration: BoxDecoration( // Add some decoration
-              color: Color(0xFF0D1015), // Background color
+              color: const Color(0xFF0D1015), // Background color
               borderRadius: BorderRadius.circular(10.0), // Rounded corners
             ),
             child:  Column( 

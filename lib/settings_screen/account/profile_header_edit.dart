@@ -1,13 +1,14 @@
 import 'dart:io'; // For File class
 // import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:seekeris/resources/auth.dart';
-// import 'package:image_picker/image_picker.dart'; // For image picking
-import 'package:choice/choice.dart';
+import 'package:seekeris/settings_screen/account/gender_select.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -28,9 +29,6 @@ class HeaderEditScreenState extends State<HeaderEditScreen> {
 
   Map<String, dynamic>? _userData;
 
-  String? _displayName;
-  String? _bio;
-  File? _imageFile; // Store the selected image file
 
   late final TextEditingController _nameController;
   late final TextEditingController _usernameController;
@@ -40,6 +38,7 @@ class HeaderEditScreenState extends State<HeaderEditScreen> {
   String? _selectedGender;
 
   final ValueNotifier<String?> _selectedGenderNotifier = ValueNotifier<String?>(null);
+  
 
   @override
   void initState() {
@@ -50,17 +49,19 @@ class HeaderEditScreenState extends State<HeaderEditScreen> {
     _bioController = TextEditingController(text: widget.userData['bio'] ?? '');
     _genderController = TextEditingController(text: widget.userData['gender'] ?? '');
 
-  _selectedGenderNotifier.value = _genderController.text;
+    _selectedGenderNotifier.value = _genderController.text;
+    _loadSelectedGender();
+    
   }
 
-  
+
   @override
   void dispose() {
     _selectedGenderNotifier.dispose();
     _nameController.dispose();
     _usernameController.dispose();
     _bioController.dispose();
-    // _genderController.dispose();
+    _selectedGenderNotifier.dispose(); //
     super.dispose();
   }
 
@@ -92,23 +93,61 @@ class HeaderEditScreenState extends State<HeaderEditScreen> {
     }
   }
 
+  Future<void> _loadSelectedGender() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedGender = prefs.getString('selectedGender');
+    setState(() {
+      _selectedGender = savedGender;
+      _genderController.text = savedGender ?? '';
+      _selectedGenderNotifier.value = savedGender;
+    });
+  }
   
+  // Future<void> _saveSelectedGender(String gender) async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await prefs.setString('selectedGender', gender);
+  // }
+
   void _handleGenderSelection(String selectedGender) {
     setState(() {
       _genderController.text = selectedGender;
     });
     _selectedGenderNotifier.value = selectedGender; // Update the ValueNotifier
-  }
-  
-  // Future<void> _pickImage() async {
-  //   final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-  //   if (pickedFile != null) {
-  //     setState(() {
-  //       _imageFile = File(pickedFile.path);
-  //     });
-  //   }
-  // }
 
+    _saveGenderToFirestore(context, selectedGender);
+  }
+
+
+  Future<void> _saveGenderToFirestore(BuildContext context, String gender) async {
+    try {
+      final authProvider = Provider.of<Auth>(context, listen: false);
+      final currentUserId = authProvider.user?.uid;
+
+      if (currentUserId != null) {
+        await FirebaseFirestore.instance
+            .collection('users') // Assuming your users collection is named 'users'
+            .doc(currentUserId)
+            .update({'selectedGender': gender});
+
+        print('Gender updated successfully in Firestore');
+      } else {
+        // User is not logged in, handle this case (e.g., show an error message)
+        throw Exception('User not logged in.');
+      }
+    } on FirebaseException catch (e) {
+      // Handle Firebase-specific errors
+      print('Firebase Error updating gender: ${e.code} - ${e.message}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error updating gender: ${e.message}')),
+      );
+    } catch (e) {
+      // Handle other unexpected errors
+      print('Unexpected error updating gender: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('An error occurred while updating your gender.')),
+      );
+    }
+  }
 
 
   // Asynchronous validation function
@@ -154,6 +193,7 @@ class HeaderEditScreenState extends State<HeaderEditScreen> {
             'displayName': _nameController.text,
             'username': _usernameController.text,
             'bio': _bioController.text,
+            // 'selectedGender': _selectedGender,
             // 'gender': _genderController.text,
           });
 
@@ -238,26 +278,31 @@ class HeaderEditScreenState extends State<HeaderEditScreen> {
         child: Column(
           children: [
             const Padding(padding: EdgeInsets.all(10.0),),
-            Container( 
-            width: double.infinity,
-            // height: double.infinity,
-            padding: const EdgeInsets.all(20.0), // Add padding
-            decoration: BoxDecoration( // Add some decoration
-              color: const Color(0xFF0D1015), // Background color
-              borderRadius: BorderRadius.circular(10.0), // Rounded corners
-            ),
-            child:  const Column( 
-              crossAxisAlignment: CrossAxisAlignment
-              .start,
-
-              children: [
-                Text('Profile picture', 
-                  style: TextStyle(
-                    color: Colors.white, 
-                    fontFamily: 'Merriweather', 
-                    fontSize: 30, 
-                    // fontWeight: FontWeight.bold
+            
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20.0),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0D1015),
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Profile picture', 
+                      style: TextStyle(
+                        color: Colors.white, 
+                        fontFamily: 'Merriweather', 
+                        fontSize: 30,
+                      ),
                     ),
+                    const SizedBox(height: 20),
+                    Center( // Center the image and buttons
+                      child: Column(
+                        children: [
+                          
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -368,36 +413,86 @@ class HeaderEditScreenState extends State<HeaderEditScreen> {
                       ),
                       const SizedBox(height: 10),
 
-                      Row(
-                        children: [
-                          const Text('Choose your gender', style: TextStyle(color: Colors.white)),
-                          const SizedBox(width: 10),
-                          ValueListenableBuilder<String?>(
-                            valueListenable: _selectedGenderNotifier,
-                            builder: (context, selectedGender, _) {
-                              return _buildButton(
-                                context,
-                                selectedGender ?? 'Select Gender', // Display selected gender or default text
-                                Icons.person,
-                                onPressed: () async {
-                                  await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => GenderSelectionScreen(
-                                        initialGender: _selectedGenderNotifier.value, // Pass the initialGender from the ValueNotifier
-                                        onGenderSelected: _handleGenderSelection,
+                      ValueListenableBuilder<String?>(
+                        valueListenable: _selectedGenderNotifier,
+                        builder: (context, selectedGender, _) {
+                          return Row(
+                            children: [
+                              const Text('Choose your gender',
+                                  style: TextStyle(color: Colors.white)),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: _buildButton(
+                                  context,
+                                  selectedGender ?? 'Select Gender',
+                                  Icons.person,
+                                  onPressed: () async {
+                                    final selectedGender = await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => GenderSelectionScreen(
+                                          initialGender: _selectedGenderNotifier.value, 
+                                          onGenderSelected: _handleGenderSelection, userData: _userData!, 
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              );
-                            }
-                          ),
-                        ],
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       ),
+
+
+                  //     ValueListenableBuilder<String?>(
+                  //       valueListenable: _selectedGenderNotifier,
+                  //       builder: (context, selectedGender, _) {
+                  //         return Row(
+                  //           children: [
+                  //         const Text('Choose your gender', style: TextStyle(color: Colors.white)),
+                  //         const SizedBox(width: 10),
+                  //         Expanded(
+                  //           child: SegmentedButton<String>(
+                  //             segments: const <ButtonSegment<String>>[
+                  //               ButtonSegment<String>(value: 'Male', label: Text('Male',
+                  //               style: TextStyle(color: Colors.white),
+                  //               )),
+                  //               ButtonSegment<String>(value: 'Female', label: Text('Female',
+                  //               style: TextStyle(color: Colors.white),
+
+                  //               )),
+                  //               ButtonSegment<String>(value: 'Custom', label: Text('Custom',
+                  //               style: TextStyle(color: Colors.white),
+                  //               )),
+                  //               ButtonSegment<String>(
+                  //                 value: 'Prefer not to say',
+                  //                 label: Text('Prefer not to say',
+                  //                 style: TextStyle(color: Colors.white),
+                  //                 ),
+                  //               ),
+                  //             ],
+                  //             selected: {_selectedGender!},
+                  //             onSelectionChanged: (Set<String> newSelection) {
+                  //               if (newSelection.isNotEmpty) {
+                  //                 final newGender = newSelection.first;
+                  //                 setState(() {
+                  //                   _selectedGender = newGender;
+                  //                   _genderController.text = newGender;  // Update the controller's text here
+                  //                 });
+                  //                 _saveSelectedGender(newGender); 
+                  //               }
+                  //             },
+                  //           ),
+                  //         ),
+                     
+
+                      
+                  //   ],);},
+                  // ),
                       const SizedBox(height: 20),
 
-                      ElevatedButton(
+                  ElevatedButton(
                         onPressed: _saveProfile,
                         child: const Text(
                           'Save', 
@@ -406,160 +501,16 @@ class HeaderEditScreenState extends State<HeaderEditScreen> {
                           )
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-  
-}
-
-class GenderSelectionScreen extends StatefulWidget {
-  final String? initialGender;
-  final Function(String) onGenderSelected;
-
-  const GenderSelectionScreen({
-    Key? key,
-    this.initialGender,
-    required this.onGenderSelected,
-  }) : super(key: key);
-
-  @override
-  _GenderSelectionScreenState createState() => _GenderSelectionScreenState();
-}
-
-class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
-  String? _selectedGender;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadSelectedGender(); 
-  }
-
-Future<void> _loadSelectedGender() async {
-  final prefs = await SharedPreferences.getInstance();
-  final savedGender = prefs.getString('selectedGender');
-
-  // Update the state using setState
-  setState(() {
-    _selectedGender = savedGender;
-  });
-}
-
-  // Save the selected gender to SharedPreferences
-  Future<void> _saveSelectedGender(String gender) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('selectedGender', gender);
-  }
-
-  
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black, // Match the image background
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          'Gender',
-          style: TextStyle(color: Colors.white),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              if (_selectedGender != null) {
-                try {
-                  // 1. Save the selected gender to Firestore (call AuthService method)
-                  await context.read<Auth>().saveGenderToFirestore(_selectedGender!);
-
-                  // 2. Call the callback to update the gender in the parent widget
-                  widget.onGenderSelected(_selectedGender!);
-
-                  // 3. Navigate back to the previous screen
-                  Navigator.pop(context);
-                } catch (e) {
-                  // Handle errors (e.g., show a SnackBar)
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error updating gender: $e')),
-                  );
-                }
-              }
-            },
-            child: const Text(
-              'Done',
-              style: TextStyle(color: Colors.blue),
-            ),
+                ],      ),
           ),
-        ],
-      ),
-      body: Container( // Add Container for background color
-        color: Colors.black,
-        child: ListView(
-          children: [
-            // "This won't be part of your public profile" text
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                "This won't be part of your public profile",
-                style: TextStyle(
-                  color: Colors.grey[600], // Match the image text color
-                ),
-              ),
-            ),
-
-            // Gender options with RadioListTile
-            _buildGenderOption('Male'),
-            _buildGenderOption('Female'),
-            _buildGenderOption('Custom'),
-            _buildGenderOption('Prefer not to say'),
+          ),),
           ],
         ),
       ),
     );
   }
-
-  Future<void> _saveGenderToFirestore(BuildContext context, String gender) async {
-    try {
-      final authProvider = Provider.of<Auth>(context, listen: false);
-      final currentUserId = authProvider.user?.uid;
-
-      if (currentUserId != null) {
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(currentUserId)
-            .update({'gender': gender});
-      } else {
-        throw Exception('User not logged in.');
-      }
-    } catch (e) {
-      // Handle errors (e.g., show a SnackBar)
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error updating gender: $e')),
-      );
-    }
-  }
-
-  // Helper function to build each gender option
-  Widget _buildGenderOption(String gender) {
-    return RadioListTile<String>(
-      title: Text(gender, style: TextStyle(color: Colors.white)),
-      value: gender,
-      groupValue: _selectedGender,
-      onChanged: (value) {
-        setState(() {
-          _selectedGender = value;
-        });
-        _saveSelectedGender(value!); // Save the selected gender
-      },
-      activeColor: Colors.blue,
-    );
-  }
+  
 }
+
+
+

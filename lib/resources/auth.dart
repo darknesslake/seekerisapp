@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 
 
 class Auth with ChangeNotifier {
@@ -249,7 +250,7 @@ Future<void> registerWithEmailAndPassword(BuildContext context, String email, St
         .doc(currentUser.uid)
         .get();
 
-    final userData = userDoc.data() as Map<String, dynamic>?;
+    final userData = userDoc.data();
     final currentUserName = userData?['username'] ?? 'Anonymous'; // Get the current user's username
 
 
@@ -288,22 +289,37 @@ Future<void> registerWithEmailAndPassword(BuildContext context, String email, St
     }
   }
 
-  Future<void> saveGenderToFirestore(String gender) async {
+  Future<void> saveGenderToFirestore(BuildContext context, String gender) async {
     try {
-      final currentUser = _auth.currentUser;
+      final authProvider = Provider.of<Auth>(context, listen: false);
+      final currentUserId = authProvider.user?.uid;
 
-      if (currentUser != null) {
+      if (currentUserId != null) {
         await FirebaseFirestore.instance
-            .collection('users')
-            .doc(currentUser.uid)
-            .update({'gender': gender});
+            .collection('users') // Assuming your users collection is named 'users'
+            .doc(currentUserId)
+            .update({'selectedGender': gender});
+
+        print('Gender updated successfully in Firestore');
       } else {
+        // User is not logged in, handle this case (e.g., show an error message)
         throw Exception('User not logged in.');
       }
+    } on FirebaseException catch (e) {
+      // Handle Firebase-specific errors
+      print('Firebase Error updating gender: ${e.code} - ${e.message}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error updating gender: ${e.message}')),
+      );
     } catch (e) {
-      throw Exception('Error updating gender: $e');
+      // Handle other unexpected errors
+      print('Unexpected error updating gender: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('An error occurred while updating your gender.')),
+      );
     }
   }
+
 
 }
 
